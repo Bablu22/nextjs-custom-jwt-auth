@@ -22,15 +22,19 @@ export async function middleware(req: NextRequest) {
     return;
 
   if (
-    !token &&
-    (req.nextUrl.pathname.startsWith("/api/users") ||
-      req.nextUrl.pathname.startsWith("/api/auth/logout"))
-  ) {
-    return getErrorResponse(
-      401,
-      "You are not logged in. Please provide a token to gain access."
-    );
-  }
+    req.nextUrl.pathname.startsWith("/register") &&
+    (!token || redirectToLogin)
+  )
+    if (
+      !token &&
+      (req.nextUrl.pathname.startsWith("/api/users") ||
+        req.nextUrl.pathname.startsWith("/api/auth/logout"))
+    ) {
+      return getErrorResponse(
+        401,
+        "You are not logged in. Please provide a token to gain access."
+      );
+    }
 
   const response = NextResponse.next();
 
@@ -77,5 +81,11 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/profile", "/login", "/api/users/:path*", "/api/auth/logout"],
+  matcher: [
+    "/profile",
+    "/login",
+    "/register",
+    "/api/users/:path*",
+    "/api/auth/logout",
+  ],
 };
